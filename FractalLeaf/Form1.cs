@@ -21,7 +21,6 @@ namespace FractalLeaf
 
         Bitmap _bitmap = null;
         List<PointF> _points = new List<PointF>();
-        Random _random = new Random();
         const int c_pointNumber = 72000;
 
         const float c_MinX = -6;
@@ -29,8 +28,7 @@ namespace FractalLeaf
         const float c_MinY = 0.1f;
         const float c_MaxY = 11;
 
-        int _width;
-        int _height;
+        float _kx, _ky;
 
         #endregion
 
@@ -113,10 +111,14 @@ namespace FractalLeaf
 
         private void DrawFern()
         {
+            // очищаем список точек
             _points.Clear();
 
             // будем начинать рисовать с точки (0, 0)
             float xtemp = 0, ytemp = 0;
+
+            // класс для генерации случайных чисел
+            Random random = new Random();
 
             // переменная хранения номера функции для вычисления следующей точки
             int numF = 0;
@@ -124,7 +126,7 @@ namespace FractalLeaf
             for (int i = 0; i < c_pointNumber; i++)
             {
                 // рандомное число от 0 до 1
-                double num = _random.NextDouble();
+                double rd = random.NextDouble();
 
                 // проверяем какой функцией воспользуемся для вычисления следующей точки
                 for (int j = 0; j <= 3; j++)
@@ -132,9 +134,9 @@ namespace FractalLeaf
                     // если рандомное число оказалось меньше или равно
                     // заданного коэффициента вероятности,
                     // задаем номер функции
-                    num -= _probability[j];
+                    rd -= _probability[j];
 
-                    if (num <= 0)
+                    if (rd <= 0)
                     {
                         numF = j;
                         break;
@@ -149,9 +151,9 @@ namespace FractalLeaf
                 xtemp = X;
                 ytemp = Y;
 
-                // вычисляем значение пикселя
-                X = Convert.ToInt32(xtemp * _width + _bitmap.Width / 2);
-                Y = Convert.ToInt32(ytemp * _height);
+                // вычисляем координаты пикселя
+                X = xtemp * _kx + _bitmap.Width / 2;
+                Y = ytemp * _ky;
 
                 _points.Add(new PointF(X, Y));
             }
@@ -165,8 +167,8 @@ namespace FractalLeaf
             CreateBitmap();
 
             // вычисляем коэффициент
-            _width = Convert.ToInt32(pictureBox1.Width / (c_MaxX - c_MinX));
-            _height = Convert.ToInt32(pictureBox1.Height / (c_MaxY - c_MinY));
+            _kx = pictureBox1.Width / (c_MaxX - c_MinX);
+            _ky = pictureBox1.Height / (c_MaxY - c_MinY);
 
             DrawFern();
         }
@@ -176,8 +178,8 @@ namespace FractalLeaf
             CreateBitmap();
 
             // вычисляем коэффициент
-            _width = Convert.ToInt32(pictureBox1.Width / (c_MaxX - c_MinX));
-            _height = Convert.ToInt32(pictureBox1.Height / (c_MaxY - c_MinY));
+            _kx = pictureBox1.Width / (c_MaxX - c_MinX);
+            _ky = pictureBox1.Height / (c_MaxY - c_MinY);
 
             DrawFern();
         }
