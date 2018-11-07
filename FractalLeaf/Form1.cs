@@ -30,12 +30,8 @@ namespace FractalLeaf
 
         float _kx, _ky;
 
-        #endregion
-
-        #region private
-
         // Массив коэффциентов вероятностей
-        private float[] _probability = new float[4]
+        float[] _probability = new float[4]
         {
             0.01f,
             0.06f,
@@ -44,7 +40,7 @@ namespace FractalLeaf
         };
 
         // Матрица коэффициентов
-        private float[,] _funcCoef = new float[4, 6]
+        float[,] _funcCoef = new float[4, 6]
         {
             //a      b       c      d      e  f
             {0,      0,      0,     0.16f, 0, 0   },    // 1 функция
@@ -52,6 +48,10 @@ namespace FractalLeaf
             {0.2f,  -0.26f,  0.23f, 0.22f, 0, 1.6f},    // 3 функция
             {0.85f,  0.04f, -0.04f, 0.85f, 0, 1.6f}     // 4 функция
         };
+
+        #endregion
+
+        #region private
 
         void Render()
         {
@@ -84,9 +84,7 @@ namespace FractalLeaf
                 if (index < 0 || index >= bytes)
                     continue;
 
-                rgbValues[index + 0] = 0;
-                rgbValues[index + 1] = 255;
-                rgbValues[index + 2] = 0;
+                rgbValues[index + 1] = 255; // green
             }
 
             // Copy the RGB values back to the bitmap
@@ -98,15 +96,17 @@ namespace FractalLeaf
             pictureBox1.Image = _bitmap;
         }
 
-        void CreateBitmap()
+        bool CreateBitmap()
         {
             if (pictureBox1.Width < 1 || pictureBox1.Height < 1)
             {
                 _bitmap = null;
-                return;
+                return false;
             }
 
             _bitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            return _bitmap.Width > 0 && _bitmap.Height > 0;
         }
 
         private void DrawFern()
@@ -164,24 +164,27 @@ namespace FractalLeaf
         private void Form1_Load(object sender, EventArgs e)
         {
             pictureBox1.BackColor = Color.White;
-            CreateBitmap();
 
-            // вычисляем коэффициент
-            _kx = pictureBox1.Width / (c_MaxX - c_MinX);
-            _ky = pictureBox1.Height / (c_MaxY - c_MinY);
+            if (CreateBitmap())
+            {
+                // вычисляем коэффициент
+                _kx = pictureBox1.Width / (c_MaxX - c_MinX);
+                _ky = pictureBox1.Height / (c_MaxY - c_MinY);
 
-            DrawFern();
+                DrawFern();
+            }
         }
 
         private void pictureBox1_SizeChanged(object sender, EventArgs e)
         {
-            CreateBitmap();
+            if (CreateBitmap())
+            {
+                // вычисляем коэффициент
+                _kx = pictureBox1.Width / (c_MaxX - c_MinX);
+                _ky = pictureBox1.Height / (c_MaxY - c_MinY);
 
-            // вычисляем коэффициент
-            _kx = pictureBox1.Width / (c_MaxX - c_MinX);
-            _ky = pictureBox1.Height / (c_MaxY - c_MinY);
-
-            DrawFern();
+                DrawFern();
+            }
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
