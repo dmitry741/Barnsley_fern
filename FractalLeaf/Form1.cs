@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FractalLeaf
@@ -21,12 +17,12 @@ namespace FractalLeaf
 
         Bitmap _bitmap = null;
         List<PointF> _points = new List<PointF>();
-        const int c_pointNumber = 72000;
+        const int c_pointNumber = 96000;
 
-        const float c_MinX = -6;
-        const float c_MaxX = 6;
+        const float c_MinX = -5;
+        const float c_MaxX = 5;
         const float c_MinY = 0.1f;
-        const float c_MaxY = 11;
+        const float c_MaxY = 10.5f;
 
         float _kx, _ky;
 
@@ -120,28 +116,14 @@ namespace FractalLeaf
             // класс для генерации случайных чисел
             Random random = new Random();
 
-            // переменная хранения номера функции для вычисления следующей точки
-            int numF = 0;
-
             for (int i = 0; i < c_pointNumber; i++)
             {
-                // рандомное число от 0 до 1
+                // случайное число от 0 до 1
                 double rd = random.NextDouble();
 
                 // проверяем какой функцией воспользуемся для вычисления следующей точки
-                for (int j = 0; j <= 3; j++)
-                {
-                    // если рандомное число оказалось меньше или равно
-                    // заданного коэффициента вероятности,
-                    // задаем номер функции
-                    rd -= _probability[j];
-
-                    if (rd <= 0)
-                    {
-                        numF = j;
-                        break;
-                    }
-                }
+                float s = _probability.First(z => (rd -= z) <= 0);
+                int numF = Array.IndexOf(_probability, s);
 
                 // вычисляем координаты
                 float X = _funcCoef[numF, 0] * xtemp + _funcCoef[numF, 1] * ytemp + _funcCoef[numF, 4];
@@ -151,7 +133,7 @@ namespace FractalLeaf
                 xtemp = X;
                 ytemp = Y;
 
-                // вычисляем координаты пикселя
+                // преобразуем в оконные координаты
                 X = xtemp * _kx + _bitmap.Width / 2;
                 Y = ytemp * _ky;
 
