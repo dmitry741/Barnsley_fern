@@ -63,6 +63,7 @@ namespace FractalLeaf
 
             int bytes = Math.Abs(bitmapData.Stride) * _bitmap.Height;
             byte[] rgbValues = new byte[bytes];
+            Array.Clear(rgbValues, 0, bytes);
 
             System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
 
