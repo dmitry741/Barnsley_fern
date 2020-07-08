@@ -59,18 +59,13 @@ namespace FractalLeaf
 
             Rectangle rect = new Rectangle(0, 0, _bitmap.Width, _bitmap.Height);
             System.Drawing.Imaging.BitmapData bitmapData = _bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite, _bitmap.PixelFormat);
-
-            // Get the address of the first line.
             IntPtr ptr = bitmapData.Scan0;
 
-            // Declare an array to hold the bytes of the bitmap.
             int bytes = Math.Abs(bitmapData.Stride) * _bitmap.Height;
             byte[] rgbValues = new byte[bytes];
 
-            // Copy the RGB values into the array.
             System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
 
-            // Fill array.  
             foreach (PointF point in _points)
             {
                 int X = Convert.ToInt32(point.X);
@@ -80,13 +75,10 @@ namespace FractalLeaf
                 if (index < 0 || index >= bytes)
                     continue;
 
-                rgbValues[index + 1] = 255; // green
+                rgbValues[index + 1] = 255; // зеленый цвет
             }
 
-            // Copy the RGB values back to the bitmap
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
-
-            // Unlock the bits.
             _bitmap.UnlockBits(bitmapData);
 
             pictureBox1.Image = _bitmap;
