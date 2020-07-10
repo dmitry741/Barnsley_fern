@@ -65,8 +65,6 @@ namespace FractalLeaf
             byte[] rgbValues = new byte[bytes];
             Array.Clear(rgbValues, 0, bytes);
 
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-
             foreach (PointF point in _points)
             {
                 int X = Convert.ToInt32(point.X);
